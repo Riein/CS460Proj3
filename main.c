@@ -60,7 +60,7 @@ int main(int argc, char *argv[]){
 		}
 
 		/* TODO: Run schedule function. */
-	} else if (strcmp(type, "SJF") {
+	} else if (strcmp(type, "SJF")) {
 		/* TODO: Run schedule function. */
 	} else {
 		fprintf(stderr, "Error: Unknown type `%s'\n", type);
