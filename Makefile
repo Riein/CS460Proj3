@@ -1,8 +1,11 @@
 CC = gcc
-CFLAGS = -g -Wall -std=c99
+CFLAGS = -Wall -std=c99
 PROG = SchedSim
 
 all: $(PROG)
+
+debug: CFLAGS += -DDEBUG=1 -g
+debug: $(PROG)
 
 $(PROG): main.o
 	$(CC) $^ -o $@
