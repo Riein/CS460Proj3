@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "heap.h"
 
 
@@ -49,18 +50,18 @@ PCB *minheap_pop_min(PCB *A[], int *n) {
 	A[*n - 1] = NULL;
 
 	/* Resize heap. */
-	realloc(A, sizeof(PCB *) * (*n - 1));
+	A = realloc(A, sizeof(PCB *) * (*n - 1));
 	*n -= 1;
 
 	/* Re-heapify. */
-	heapify(A, 0, *n);
+	minheap_heapify(A, 0, *n);
 
 	return min;
 }
 
 
 /* Insert a new item into the heap. */
-void minheap_insert(PCB *A[], PCB *item, int n) {
+void minheap_insert(PCB *A[], PCB *item, int *n) {
 	/* TODO */
 }
 
