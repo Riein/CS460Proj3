@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -std=c99
+CFLAGS = -Wall -std=gnu99
 PROG = SchedSim
 
 all: $(PROG)
@@ -7,11 +7,14 @@ all: $(PROG)
 debug: CFLAGS += -DDEBUG=1 -g
 debug: $(PROG)
 
-$(PROG): main.o
+$(PROG): main.o heap.o
 	$(CC) $^ -o $@
 
-.c.o:
-	$(CC) -c $(CFLAGS) $<
+main.o: main.c pcb.h
+	$(CC) $(CFLAGS) -c main.c
+
+heap.o: heap.h heap.c pcb.h
+	$(CC) $(CFLAGS) -c heap.c
 
 clean:
 	rm -rf *.o $(PROG)
