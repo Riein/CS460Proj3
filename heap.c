@@ -38,3 +38,29 @@ void minheap_build(PCB *A[], int n){
 	}
 }
 
+
+/* Pop the min element from the min heap. */
+PCB *minheap_pop_min(PCB *A[], int *n) {
+	/* Save root. */
+	PCB *min = A[0];
+
+	/* Move last node to root. */
+	A[0] = A[*n - 1];
+	A[*n - 1] = NULL;
+
+	/* Resize heap. */
+	realloc(A, sizeof(PCB *) * (*n - 1));
+	*n -= 1;
+
+	/* Re-heapify. */
+	heapify(A, 0, *n);
+
+	return min;
+}
+
+
+/* Insert a new item into the heap. */
+void minheap_insert(PCB *A[], PCB *item, int n) {
+	/* TODO */
+}
+
