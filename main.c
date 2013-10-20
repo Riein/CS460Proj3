@@ -11,7 +11,7 @@
 
 
 /* 
- * Print program usage line to stdout. Takes string pn, which is the program 
+ * Print program usage line to stdout. Takes string `pn', which is the program 
  * name (typically argv[0]).
  */
 void print_usage(const char *pn) {
