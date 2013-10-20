@@ -8,20 +8,20 @@ void minheap_heapify(PCB *A[], int i, int n){
 	int left = right - 1;
 	int min = i;
 	PCB *tmp = 0;
-	
+
 	if (left < n && A[left]->priority < A[i]->priority) {
 		min = left;
 	}
-	
+
 	if (right < n && A[right]->priority < A[min]->priority) {
 		min = right;
 	}
-	
+
 	if (min != i) {
 		tmp = A[i];
 		A[i] = A[min];
 		A[min] = tmp;
-		
+
 		minheap_heapify(A, min, n);
 	}
 }
