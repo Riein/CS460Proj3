@@ -110,10 +110,6 @@ int main(int argc, char *argv[]){
 
 	/* Allocate processes array and read input. */
 	PCB **procs = build_procs(nproc);
-	
-	for (int i = 0; i < nproc; i++) {
-		printf("Arrival time: %d\n", procs[i]->time_arrived);
-	}
 
 	/* Branch based on type. */
 	if (strcmp(type, "FCFS") == 0) {
