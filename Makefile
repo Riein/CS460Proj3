@@ -1,7 +1,14 @@
-CC= -std=c99
+CC = gcc
+CFLAGS = -g -Wall -std=c99
+PROG = SchedSim
 
-SchedSim: main.o
-	cc main.o -o SchedSim
+all: $(PROG)
 
-main.o: main.c
-	cc $(CC) -c main.c
+$(PROG): main.o
+	$(CC) $^ -o $@
+
+.c.o:
+	$(CC) -c $(CFLAGS) $<
+
+clean:
+	rm -rf *.o $(PROG)
