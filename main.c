@@ -10,6 +10,7 @@
 #include <string.h>
 #include "pcb.h"
 
+int time = 0;
 
 /* 
  * Print program usage line to stdout. Takes string `pn', which is the program 
@@ -34,6 +35,20 @@ int pcb_arrive_compare(const void *a, const void *b) {
 	return 0;
 }
 
+
+/* Compares CPU time in PCBs for qsort. */
+int pcb_CPU_compare(const void *a, const void *b) {
+	const PCB *p1 = *(PCB **) a;
+	const PCB *p2 = *(PCB **) b;
+
+	if (p1->time_left < p2->time_left) {
+		return -1;
+	} else if (p1->time_left > p2->time_left) {
+		return 1;
+	}
+
+	return 0;
+}
 
 /* 
  * Build an array of PCBs of size nproc from stdin. Each line in stdin must
@@ -67,6 +82,69 @@ PCB **build_procs(int nproc) {
 }
 
 
+/*Gets the next process to run for SJF*/
+PCB *getNextProcSJF(PCB **procs,int nprocs){
+
+	int c = 0;
+	int size = 0;
+
+	for(int i = 0; i < nprocs; i++){
+		/*count number of processes that have arrived*/
+		if(procs[i]->time_arrived <= time){
+			size++;
+		}
+		/*short circuit loop*/
+		else{ break;}	
+	}
+
+	PCB **nextProcs = (PCB **) malloc(sizeof(PCB *) * size);
+
+	while(true){
+		if(procs[c]->time_arrived <= time){
+			nextProcs[c] = procs[c];
+		}
+		/*short circuit loop*/
+		else{ break;}
+
+		c++;
+	}
+
+	/*Sort the arrived processes by CPU time*/
+	qsort(nextProcs, nproc, sizeof(PCB *), pcb_CPU_compare);
+
+	/*handle tie in CPU time*/
+	
+
+	PCB *next = nextProcs[0];
+	free(nextProcs);
+	return next;
+}
+
+/*Removes the designated process from the list if procs*/
+PCB **removeProc(PCB **procs, int nprocs, PCB *p){
+	int c = 0;
+
+	while(true){
+		if(procs[c] == p){
+			for(int i = c; i < nprocs - 2; i++){
+				procs[i] = procs[i+1];
+			}
+			procs[nprocs - 1] = NULL;
+			break;
+		}
+		else{ c++;}
+	}
+
+	procs = (PCB **) realloc(procs,nprocs - 1);
+	return procs;
+}
+
+/*Prints the output for creating a process*/
+void createProcess(PCB *process){
+	printf("t = %d CREATED pid=%d : pid=%d, pri=%d, arr_time=%d, time_req=%d\n", time, process->pid, process->pid, process->priority, process->time_arrived, process->time_left);
+	return;
+}
+
 /* Run the FCFS scheduler on the given procs. */
 void run_fcfs_scheduler(PCB **procs, int nprocs, int cs) {
     /* TODO: Implement. */
@@ -82,8 +160,12 @@ void run_rr_scheduler(PCB **procs, int nprocs, int cs, int q) {
 /* Run the SJF scheduler on the given procs. */
 void run_sjf_scheduler(PCB **procs, int nprocs, int cs) {
     /* TODO: Implement. */
-}
 
+	PCB *process = getNextProcSJF(procs, nprocs);
+	time += process->time_left;
+	procs = removeProc(procs,nprocs, process);
+	nprocs--;
+}
 
 /* Program entry point. */
 int main(int argc, char *argv[]){
@@ -130,6 +212,7 @@ int main(int argc, char *argv[]){
 
 		run_rr_scheduler(procs, nproc, cs, q);
 	} else if (strcmp(type, "SJF")) {
+		time = procs[0]->time_arrived;
 		run_sjf_scheduler(procs, nproc, cs);
 	} else {
 		fprintf(stderr, "Error: Unknown type `%s'\n", type);
